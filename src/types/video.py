@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import datetime
 
 
 @dataclass
@@ -49,3 +50,7 @@ class Video:
 
     view_count: int
     """Number of views of the video"""
+
+    @property
+    def create_timestamp(self) -> datetime.datetime:
+        return datetime.datetime.fromtimestamp(self.create_time, tz=datetime.UTC)
