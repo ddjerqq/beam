@@ -19,11 +19,33 @@ def get_env(key: str, default: str = None) -> str:
     raise Exception(f"Environment variable {key} not found.")
 
 
+def humanize(num: int) -> str:
+    """
+    converts a number to a human readable format.
+    """
+    if num < 1000:
+        return str(num)
+
+    num = num / 1000
+
+    if num < 1000:
+        return f"{num:.1f}k"
+
+    num = num / 1000
+
+    if num < 1000:
+        return f"{num:.1f}m"
+
+    num = num / 1000
+
+    return f"{num:.1f}b"
+
+
 def video_info_to_webhook_payload(author: User, video: Video) -> dict[str, str]:
     """converts a video object to a webhook object"""
 
     return {
-        "content": f"||@everyone||\n**{author.username}** just posted a new video!",
+        "content": f"|| @everyone ||\n**{author.username}** just posted a new video!",
         "embeds": [
             {
                 "title": video.title,
@@ -35,10 +57,12 @@ def video_info_to_webhook_payload(author: User, video: Video) -> dict[str, str]:
                     "icon_url": author.avatar_url
                 },
                 "footer": {
-                    "text": "posted at",
+                    "text": f"views {humanize(video.view_count)} | "
+                            f"likes {humanize(video.like_count)} | "
+                            f"shares {humanize(video.share_count)} | "
+                            f"posted at",
                     "icon_url": "https://raw.githubusercontent.com/ddjerqq/beam/master/tiktoklogo.webp"
                 },
-                # 2023-12-14T04:00:00.000Z
                 "timestamp": video.create_timestamp.isoformat(),
                 "image": {
                     "url": video.cover_image_url
